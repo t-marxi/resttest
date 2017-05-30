@@ -1,6 +1,7 @@
 package com.klimigo.application.conversation.authorization.token;
 
 import com.klimigo.application.conversation.authorization.AuthorizationData;
+import com.klimigo.application.conversation.authorization.TimeUtils;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 
 @Immutable
@@ -23,7 +24,7 @@ public class AuthorizationToken {
         this.token = data.getAccessToken();
         this.timeInSec = data.getExpiresIn();
         this.startTime = System.currentTimeMillis();
-        this.endTime = this.startTime + timeInSec * 1000;
+        this.endTime = TimeUtils.countTimePlus(this.startTime, timeInSec);
         this.tokenType = data.getTokenType();
     }
 

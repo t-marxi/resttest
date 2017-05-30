@@ -2,6 +2,7 @@ package com.klimigo.application.conversation.authorization.service;
 
 import com.klimigo.application.conversation.authorization.AuthorizationData;
 import com.klimigo.application.conversation.authorization.AuthorizationRequester;
+import com.klimigo.application.conversation.authorization.TimeUtils;
 import com.klimigo.application.conversation.authorization.TokenProvider;
 import com.klimigo.application.conversation.authorization.token.AuthorizationToken;
 
@@ -19,16 +20,11 @@ public class AuthorizationService implements TokenProvider {
     private AuthorizationRequester authorizationRequester;
 
     public void init() throws InterruptedException {
-        lock.lock();
-        try {
-            refreshToken();
-        } finally {
-            lock.unlock();
-        }
+        refreshToken();
     }
 
     @Override
-    public AuthorizationToken getToken() throws InterruptedException {
+    public AuthorizationToken getToken() {
         lock.lock();
         try {
             if (isExpired(token)) {
@@ -38,18 +34,6 @@ public class AuthorizationService implements TokenProvider {
             return token;
         } finally {
             lock.unlock();
-        }
-    }
-
-    @Override
-    public void returnToken() {
-        if (counter.get() == 0) {
-            // Here should be logging.
-        }
-        if (0 == counter.decrementAndGet()) {
-            synchronized (counter) {
-                counter.notifyAll();
-            }
         }
     }
 
@@ -65,22 +49,21 @@ public class AuthorizationService implements TokenProvider {
         this.authorizationRequester = authorizationRequester;
     }
 
-    protected void refreshToken() throws InterruptedException {
-        synchronized (counter) {
-            while (counter.get() != 0) {
-                counter.wait(requestTimeBefore * 10);
-            }
+    protected void refreshToken() {
+        lock.lock();
+        try {
+            AuthorizationData authorizationData = authorizationRequester.requestAuthorizationData();
+            token = new AuthorizationToken(authorizationData);
+        } finally {
+            lock.unlock();
         }
-        // refresh token
-        AuthorizationData authorizationData = authorizationRequester.requestAuthorizationData();
-        token = Objects.isNull(authorizationData) ? null : new AuthorizationToken(authorizationData);
     }
 
     protected boolean isExpired(AuthorizationToken authorizationToken) {
         if (Objects.isNull(authorizationToken)) {
             return true;
         }
-        long currentTime = System.currentTimeMillis() + requestTimeBefore * 1000;
+        long currentTime = TimeUtils.getCurrentTimePlus(requestTimeBefore);
         long expirationTime = authorizationToken.getEndTime();
         return (expirationTime < currentTime);
     }

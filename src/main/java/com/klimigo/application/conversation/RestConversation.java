@@ -37,14 +37,8 @@ public class RestConversation {
             new Thread(() ->
             {
                 while (true) {
-                    try {
-                        AuthorizationToken token = service.getToken();
-                        System.out.println(Thread.currentThread().getName() + ":\n " + token);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } finally {
-                        service.returnToken();
-                    }
+                    AuthorizationToken token = service.getToken();
+                    System.out.println(Thread.currentThread().getName() + ":\n " + token);
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
