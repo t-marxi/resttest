@@ -7,13 +7,11 @@ import com.klimigo.application.conversation.authorization.TokenProvider;
 import com.klimigo.application.conversation.authorization.token.AuthorizationToken;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class AuthorizationService implements TokenProvider {
 
-    private volatile AtomicInteger counter = new AtomicInteger();
     private Lock lock = new ReentrantLock();
     private volatile AuthorizationToken token;
     private int requestTimeBefore;
@@ -30,7 +28,6 @@ public class AuthorizationService implements TokenProvider {
             if (isExpired(token)) {
                 refreshToken();
             }
-            counter.incrementAndGet();
             return token;
         } finally {
             lock.unlock();
