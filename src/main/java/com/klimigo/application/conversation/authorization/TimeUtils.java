@@ -7,7 +7,7 @@ public class TimeUtils {
         return ct + seconds * 1000;
     }
 
-    public static long countTimePlus(long time, long seconds) {
+    public static long countTimePlusSeconds(long time, long seconds) {
         return time + seconds * 1000;
     }
 }

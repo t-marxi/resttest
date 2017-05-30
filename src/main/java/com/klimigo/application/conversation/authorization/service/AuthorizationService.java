@@ -17,7 +17,7 @@ public class AuthorizationService implements TokenProvider {
     private int requestTimeBefore;
     private AuthorizationRequester authorizationRequester;
 
-    public void init() throws InterruptedException {
+    public void init() {
         refreshToken();
     }
 

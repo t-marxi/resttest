@@ -24,7 +24,7 @@ public class AuthorizationToken {
         this.token = data.getAccessToken();
         this.timeInSec = data.getExpiresIn();
         this.startTime = System.currentTimeMillis();
-        this.endTime = TimeUtils.countTimePlus(this.startTime, timeInSec);
+        this.endTime = TimeUtils.countTimePlusSeconds(this.startTime, timeInSec);
         this.tokenType = data.getTokenType();
     }
 

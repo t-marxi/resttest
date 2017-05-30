@@ -2,9 +2,6 @@ package com.klimigo.application.conversation.authorization;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * Created by IKlimovskiy on 26.5.2017 г..
- */
 public class AuthorizationRequest {
 
     @JsonProperty("client_id")
